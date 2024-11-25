@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5', // Cor de fundo mais clara
+    backgroundColor: '#222222', // Cor de fundo mais clara
     padding: 20,
   },
   tituloCadastro: {

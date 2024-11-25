@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Picker, ScrollView } from 'react-native';
-import Parse from 'parse';  // Importando o Parse
+import Parse from 'parse'; // Importando o Parse
 import { useRouter } from 'expo-router';
 
+// Inicializando o Parse
 Parse.initialize('Ls0ZDWnnZDKmeGDU84muTYUqsjf9LqvInr72n9wa', 'wpIgdQHgVdu2jZfuzfn17KzH1JFv02ZfqtU9mluB');
 Parse.serverURL = 'https://Parseapi.back4app.com/';
+Parse.User.enableUnsafeCurrentUser(); // Habilitando sessões persistentes para usuários
 
 export default function criarpost() {
   const [title, setTitle] = useState('');
@@ -16,6 +18,7 @@ export default function criarpost() {
 
   const createPost = async () => {
     try {
+      // Criação do objeto Post
       const Post = Parse.Object.extend('Post');
       const newPost = new Post();
       newPost.set('title', title);
@@ -24,6 +27,7 @@ export default function criarpost() {
       newPost.set('contact', contact);
       newPost.set('category', category);
 
+      // Verifica se o usuário está logado
       const currentUser = await Parse.User.current();
       if (currentUser) {
         newPost.set('username', currentUser.get('username'));
@@ -32,17 +36,24 @@ export default function criarpost() {
         return;
       }
 
+      // Salva o post no Back4App
       await newPost.save();
       Alert.alert('Sucesso', 'Post criado com sucesso!');
       router.push('/Home');
     } catch (error) {
-      console.error('Erro ao criar o post:', error);
-      Alert.alert('Erro', 'Não foi possível criar o post.');
+      console.error('Erro ao criar o post:', error.message, error.code);
+      Alert.alert('Erro', `Não foi possível criar o post. Erro: ${error.message}`);
     }
   };
 
   const handleCreatePost = () => {
-    if (title.trim() === '' || description.trim() === '' || price.trim() === '' || contact.trim() === '' || category.trim() === '') {
+    if (
+      title.trim() === '' ||
+      description.trim() === '' ||
+      price.trim() === '' ||
+      contact.trim() === '' ||
+      category.trim() === ''
+    ) {
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos!');
       return;
     }
@@ -120,7 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#333',
+    color: '#fff',
   },
   label: {
     fontSize: 16,
